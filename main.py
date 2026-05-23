@@ -1,93 +1,155 @@
-import asyncio
+import os
+import time
 import random
 from telegram import Bot
 
-TOKEN = "8870951088:AAEKS7GU_fr5sRQ7Qk6LH0q3L80wFx3DEUQ"
-CHAT_ID = "@XPERSONALSIGNALBOT"
+# =========================
+# SHIHAB SIGNAL BOT
+# =========================
+
+BOT_TOKEN = "8870951088:AAEKS7GU_fr5sRQ7Qk6LH0q3L80wFx3DEUQ"
+CHAT_ID = "-1003334645126"
+
+bot = Bot(token=BOT_TOKEN)
+
+# =========================
+# REAL MARKET PAIRS
+# =========================
 
 pairs = [
-
-    "EUR/USD",
-    "GBP/USD",
-    "USD/JPY",
-    "AUD/USD",
-    "USD/CAD",
-    "USD/CHF",
-    "NZD/USD",
-
-    "EUR/GBP",
-    "EUR/JPY",
-    "EUR/AUD",
-    "EUR/CAD",
-    "EUR/CHF",
-    "GBP/JPY",
-    "GBP/AUD",
-    "GBP/CAD",
-    "GBP/CHF",
-
-    "AUD/JPY",
-    "AUD/CAD",
-    "AUD/CHF",
-
-    "CAD/JPY",
-    "CHF/JPY",
-
-    "NZD/JPY",
-    "NZD/CAD",
-    "NZD/CHF",
-
-    "EUR/NZD",
-    "GBP/NZD",
-    "AUD/NZD",
-
-    "USD/MXN",
-    "USD/SGD",
-    "USD/TRY",
-    "USD/ZAR",
-
-    "EUR/TRY",
-    "GBP/SGD",
-    "AUD/SGD"
-
+    "EURUSD",
+    "GBPUSD",
+    "USDJPY",
+    "AUDUSD",
+    "USDCAD",
+    "USDCHF",
+    "NZDUSD",
+    "EURJPY",
+    "GBPJPY",
+    "EURGBP",
+    "AUDJPY",
+    "CADJPY",
+    "CHFJPY",
+    "EURAUD",
+    "GBPAUD",
+    "GBPCAD",
+    "GBPCHF",
+    "AUDCAD",
+    "AUDCHF",
+    "NZDJPY",
+    "NZDCHF",
+    "NZDCAD",
+    "EURCAD",
+    "EURCHF",
+    "USDMXN",
+    "USDTRY",
+    "USDZAR",
+    "USDSGD",
+    "USDNOK",
+    "USDSEK"
 ]
 
-signals = [
-    "CALL 📈",
-    "PUT 📉"
-]
+signals = ["BUY", "SELL"]
 
-times = [
-    "M1",
-    "M5"
-]
+# =========================
+# SEND SIGNAL
+# =========================
 
-async def main():
+def send_signal():
 
-    bot = Bot(token=TOKEN)
+    pair = random.choice(pairs)
+    signal = random.choice(signals)
 
-    while True:
+    entry = round(random.uniform(1.10000, 99.99999), 5)
 
-        pair = random.choice(pairs)
-        signal = random.choice(signals)
-        timeframe = random.choice(times)
+    current_time = time.strftime("%H:%M")
 
-        message = f"""
-🚨 SIGNAL ALERT 🚨
+    timeframe = random.choice(["1 Minute", "5 Minute"])
 
-📊 Pair: {pair}
-⏰ Timeframe: {timeframe}
-🎯 Signal: {signal}
+    if signal == "BUY":
+        icon = "🟢 BUY"
+    else:
+        icon = "🔴 SELL"
 
-🔥 Trade Carefully
+    message = f"""
+SHIHAB SIGNAL BOT _ 90%
+
+📊 {pair}
+
+⏰ Time: {current_time}
+📈 {timeframe}
+
+🎯 Entry: {entry}
+{icon}
+
+⏩ If loss 1 MTG
 """
 
-        await bot.send_message(
-            chat_id=CHAT_ID,
-            text=message
-        )
+    bot.send_message(
+        chat_id=CHAT_ID,
+        text=message
+    )
 
-        print("Signal Sent ✅")
+    # WAIT RESULT
+    if timeframe == "1 Minute":
+        time.sleep(60)
+    else:
+        time.sleep(300)
 
-        await asyncio.sleep(60)
+    result = random.choice(["WIN", "LOSS"])
 
-asyncio.run(main())
+    # =========================
+    # RESULT MESSAGE
+    # =========================
+
+    if result == "WIN":
+
+        result_message = f"""
+📊 {pair}
+
+⏰ Time: {current_time}
+📈 {timeframe}
+
+🎯 Entry: {entry}
+{icon}
+
+✅ WIN ✅
+"""
+
+    else:
+
+        result_message = f"""
+📊 {pair}
+
+⏰ Time: {current_time}
+📈 {timeframe}
+
+🎯 Entry: {entry}
+{icon}
+
+❌ MTG LOSS
+"""
+
+    bot.send_message(
+        chat_id=CHAT_ID,
+        text=result_message
+    )
+
+# =========================
+# RUN BOT
+# =========================
+
+while True:
+
+    try:
+
+        send_signal()
+
+        # CHECK EVERY 5 SECOND
+        time.sleep(5)
+
+    except Exception as e:
+
+        print(e)
+
+        time.sleep(10)
